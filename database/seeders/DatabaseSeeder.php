@@ -1,29 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        User::firstOrCreate(
-            ['email' => 'isharaashen3@gmail.com'],
-            [
-                'name' => 'Admin',
-                'password' => bcrypt('Ashes99@'),
-                'is_admin' => true,
-            ]
-        );
-
-        $this->call(ConsumerAffairsActSeeder::class);
+        $this->call([
+            UserSeeder::class,
+            ConsumerAffairsActSeeder::class,
+        ]);
     }
 }
