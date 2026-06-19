@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class LegalNodeController extends Controller
@@ -29,7 +30,7 @@ class LegalNodeController extends Controller
                 'label'   => str_repeat('  ', $n->level - 1)
                              . $n->node_type
                              . ($n->node_no ? ' ' . $n->node_no : '')
-                             . ($n->heading ? ' — ' . \Str::limit($n->heading, 60) : ''),
+                             . ($n->heading ? ' — ' . Str::limit($n->heading, 60) : ''),
             ]);
 
         return response()->json($nodes);
@@ -52,7 +53,12 @@ class LegalNodeController extends Controller
     public function index(Act $act): View
     {
         $nodes = $act->topLevelNodes()->with('allChildren')->get();
-        return view('admin.nodes.index', compact('act', 'nodes'));
+
+        $nextSortOrder = LegalNode::where('act_id', $act->act_id)
+            ->whereNull('parent_node_id')
+            ->max('sort_order') + 1;
+
+        return view('admin.nodes.index', compact('act', 'nodes', 'nextSortOrder'));
     }
 
     public function show(LegalNode $node): View
@@ -66,7 +72,11 @@ class LegalNodeController extends Controller
             'outgoingReferences.targetNode',
             'incomingReferences.sourceNode',
         ]);
-        return view('admin.nodes.show', compact('node'));
+
+        $nextChildSortOrder = LegalNode::where('parent_node_id', $node->node_id)
+            ->max('sort_order') + 1;
+
+        return view('admin.nodes.show', compact('node', 'nextChildSortOrder'));
     }
 
     public function edit(LegalNode $node): View
@@ -75,7 +85,7 @@ class LegalNodeController extends Controller
         return view('admin.nodes.edit', compact('node'));
     }
 
-    public function store(StoreLegalNodeRequest $request): RedirectResponse
+    public function store(StoreLegalNodeRequest $request): RedirectResponse|JsonResponse
     {
         $node = DB::transaction(function () use ($request) {
             $node = LegalNode::create($request->validated());
@@ -88,11 +98,15 @@ class LegalNodeController extends Controller
             return $node;
         });
 
+        if ($request->wantsJson()) {
+            return response()->json($node, 201);
+        }
+
         return redirect()->route('admin.acts.nodes.index', $node->act_id)
             ->with('success', 'Node created.');
     }
 
-    public function update(StoreLegalNodeRequest $request, LegalNode $node): RedirectResponse
+    public function update(StoreLegalNodeRequest $request, LegalNode $node): RedirectResponse|JsonResponse
     {
         DB::transaction(function () use ($request, $node) {
             $oldParent = $node->parent_node_id;
@@ -107,6 +121,11 @@ class LegalNodeController extends Controller
                 LegalNode::where('node_id', $newParent)->update(['has_children' => true]);
             }
         });
+
+        if ($request->wantsJson()) {
+            $node->refresh();
+            return response()->json($node);
+        }
 
         return redirect()->route('admin.nodes.show', $node)->with('success', 'Node updated.');
     }
@@ -143,7 +162,7 @@ class LegalNodeController extends Controller
 
     public function destroy(LegalNode $node): RedirectResponse
     {
-        $actId = $node->act_id;
+        $actId    = $node->act_id;
         $parentId = $node->parent_node_id;
 
         DB::transaction(function () use ($node, $parentId) {
@@ -155,6 +174,10 @@ class LegalNodeController extends Controller
             }
         });
 
-        return redirect()->route('admin.acts.show', $actId)->with('success', 'Node deleted.');
+        if ($parentId) {
+            return redirect()->route('admin.nodes.show', $parentId)->with('success', 'Node deleted.');
+        }
+
+        return redirect()->route('admin.acts.nodes.index', $actId)->with('success', 'Node deleted.');
     }
 }

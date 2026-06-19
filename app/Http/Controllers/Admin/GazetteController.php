@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreGazetteRequest;
 use App\Models\Gazette;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,9 +34,15 @@ class GazetteController extends Controller
         return view('admin.gazettes.create');
     }
 
-    public function store(StoreGazetteRequest $request): RedirectResponse
+    public function store(StoreGazetteRequest $request): RedirectResponse|JsonResponse
     {
-        DB::transaction(fn () => Gazette::create($request->validated()));
+        $gazette = DB::transaction(fn () => Gazette::create($request->validated()));
+
+        if ($request->wantsJson()) {
+            $gazette->loadCount('acts');
+            return response()->json($gazette, 201);
+        }
+
         return redirect()->route('admin.gazettes.index')->with('success', 'Gazette created.');
     }
 
@@ -50,9 +57,15 @@ class GazetteController extends Controller
         return view('admin.gazettes.edit', compact('gazette'));
     }
 
-    public function update(StoreGazetteRequest $request, Gazette $gazette): RedirectResponse
+    public function update(StoreGazetteRequest $request, Gazette $gazette): RedirectResponse|JsonResponse
     {
         DB::transaction(fn () => $gazette->update($request->validated()));
+
+        if ($request->wantsJson()) {
+            $gazette->refresh()->loadCount('acts');
+            return response()->json($gazette);
+        }
+
         return redirect()->route('admin.gazettes.index')->with('success', 'Gazette updated.');
     }
 

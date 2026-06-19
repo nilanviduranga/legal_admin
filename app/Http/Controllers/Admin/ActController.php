@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreActRequest;
 use App\Models\Act;
 use App\Models\Gazette;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -36,7 +37,8 @@ class ActController extends Controller
 
         $acts = $query->orderByDesc('act_year')->orderBy('act_no')->paginate(20);
         $years = Act::distinct()->orderByDesc('act_year')->pluck('act_year');
-        return view('admin.acts.index', compact('acts', 'years'));
+        $gazettes = Gazette::orderByDesc('gazette_date')->get();
+        return view('admin.acts.index', compact('acts', 'years', 'gazettes'));
     }
 
     public function create(): View
@@ -45,16 +47,25 @@ class ActController extends Controller
         return view('admin.acts.create', compact('gazettes'));
     }
 
-    public function store(StoreActRequest $request): RedirectResponse
+    public function store(StoreActRequest $request): RedirectResponse|JsonResponse
     {
         $act = DB::transaction(fn () => Act::create($request->validated()));
+
+        if ($request->wantsJson()) {
+            $act->load('gazette')->loadCount('legalNodes');
+            return response()->json($act, 201);
+        }
+
         return redirect()->route('admin.acts.show', $act)->with('success', 'Act created.');
     }
 
     public function show(Act $act): View
     {
-        $act->load(['gazette', 'topLevelNodes.allChildren']);
-        return view('admin.acts.show', compact('act'));
+        $act->load(['gazette', 'topLevelNodes']);
+        $nextSortOrder = \App\Models\LegalNode::where('act_id', $act->act_id)
+            ->whereNull('parent_node_id')
+            ->max('sort_order') + 1;
+        return view('admin.acts.show', compact('act', 'nextSortOrder'));
     }
 
     public function edit(Act $act): View
@@ -63,9 +74,15 @@ class ActController extends Controller
         return view('admin.acts.edit', compact('act', 'gazettes'));
     }
 
-    public function update(StoreActRequest $request, Act $act): RedirectResponse
+    public function update(StoreActRequest $request, Act $act): RedirectResponse|JsonResponse
     {
         DB::transaction(fn () => $act->update($request->validated()));
+
+        if ($request->wantsJson()) {
+            $act->refresh()->load('gazette')->loadCount('legalNodes');
+            return response()->json($act);
+        }
+
         return redirect()->route('admin.acts.show', $act)->with('success', 'Act updated.');
     }
 
