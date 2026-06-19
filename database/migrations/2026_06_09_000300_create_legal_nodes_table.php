@@ -15,15 +15,23 @@ return new class extends Migration
             $table->unsignedBigInteger('act_id');
             $table->unsignedBigInteger('parent_node_id')->nullable();
             $table->enum('node_type', [
-                'PART', 'CHAPTER', 'SECTION', 'SUBSECTION',
-                'PARAGRAPH', 'SUBPARAGRAPH', 'ITEM',
-                'SCHEDULE', 'PREAMBLE', 'DEFINITIONS',
+                'PART',
+                'CHAPTER',
+                'SECTION',
+                'SUBSECTION',
+                'PARAGRAPH',
+                'SUBPARAGRAPH',
+                'ITEM',
+                'SCHEDULE',
+                'PREAMBLE',
+                'DEFINITIONS',
             ]);
             $table->string('node_no', 20)->nullable();
             $table->string('heading', 500)->nullable();
+            $table->string('marginal_note', 1500)->nullable();
             $table->longText('text_content')->nullable();
             $table->unsignedInteger('sort_order')->default(0);
-            $table->unsignedTinyInteger('level');
+            $table->unsignedTinyInteger('level')->nullable();
             $table->boolean('has_children')->default(false);
             $table->enum('status', ['active', 'repealed', 'amended'])->default('active');
             $table->date('effective_date')->nullable();
