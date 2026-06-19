@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\ImportController;
 use App\Http\Controllers\Admin\LegalNodeController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\StructureController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -67,6 +68,11 @@ Route::prefix('admin')
         Route::get('import', [ImportController::class, 'showImportForm'])->name('import.form');
         Route::post('import/process', [ImportController::class, 'processImport'])->name('import.process');
         Route::post('import/confirm', [ImportController::class, 'confirmImport'])->name('import.confirm');
+
+        // Full structure browser
+        Route::get('structure', [StructureController::class, 'index'])->name('structure');
+        Route::get('structure/children', [StructureController::class, 'children'])->name('structure.children');
+        Route::get('structure/search', [StructureController::class, 'search'])->name('structure.search');
 
         // Search
         Route::get('search', [SearchController::class, 'search'])->name('search');

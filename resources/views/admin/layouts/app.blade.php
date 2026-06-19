@@ -71,6 +71,14 @@
                         </svg>
                         Cross-references
                     </a>
+                    <a href="{{ route('admin.structure') }}"
+                       class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                              {{ request()->routeIs('admin.structure*') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                        <svg class="w-4.5 h-4.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/>
+                        </svg>
+                        Full Structure
+                    </a>
                 </div>
             </div>
 
@@ -206,5 +214,50 @@
     </div>
 </div>
 
+{{-- Global hover tooltip --}}
+<div id="lex-tip"
+     style="display:none;position:fixed;z-index:9999;pointer-events:none;max-width:440px"
+     class="bg-white text-gray-900 text-sm rounded-2xl shadow-2xl ring-1 ring-gray-200 px-4 py-3 leading-relaxed whitespace-pre-wrap">
+</div>
+<script>
+(function(){
+    const tip = document.getElementById('lex-tip');
+    let showTimer, activeEl;
+
+    document.addEventListener('mouseover', function(e) {
+        const el = e.target.closest('[data-tooltip]');
+        if (!el || !el.dataset.tooltip.trim()) return;
+        if (activeEl === el) return;
+        activeEl = el;
+        clearTimeout(showTimer);
+        showTimer = setTimeout(function() {
+            tip.textContent = el.dataset.tooltip;
+            tip.style.left = '-9999px'; tip.style.top = '-9999px'; tip.style.display = 'block';
+            positionTip(e);
+        }, 350);
+    }, false);
+
+    document.addEventListener('mousemove', function(e) {
+        if (tip.style.display === 'none') return;
+        positionTip(e);
+    }, false);
+
+    document.addEventListener('mouseout', function(e) {
+        if (!e.target.closest('[data-tooltip]')) return;
+        activeEl = null;
+        clearTimeout(showTimer);
+        tip.style.display = 'none';
+    }, false);
+
+    function positionTip(e) {
+        const pad = 14, tw = tip.offsetWidth, th = tip.offsetHeight;
+        let x = e.clientX + pad, y = e.clientY + pad;
+        if (x + tw + 8 > window.innerWidth)  x = e.clientX - tw - pad;
+        if (y + th + 8 > window.innerHeight) y = e.clientY - th - pad;
+        tip.style.left = Math.max(8, x) + 'px';
+        tip.style.top  = Math.max(8, y) + 'px';
+    }
+})();
+</script>
 </body>
 </html>
