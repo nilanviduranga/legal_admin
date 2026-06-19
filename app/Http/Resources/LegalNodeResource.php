@@ -18,6 +18,7 @@ class LegalNodeResource extends JsonResource
             'node_type' => $this->node_type,
             'node_no' => $this->node_no,
             'heading' => $this->heading,
+            'marginal_note' => $this->marginal_note,
             'text_content' => $this->text_content,
             'level' => $this->level,
             'sort_order' => $this->sort_order,

@@ -21,6 +21,7 @@ class LegalNode extends Model
         'node_type',
         'node_no',
         'heading',
+        'marginal_note',
         'text_content',
         'sort_order',
         'level',
