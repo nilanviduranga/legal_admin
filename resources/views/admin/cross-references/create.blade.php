@@ -30,7 +30,7 @@
 </div>
 @endif
 
-<div class="max-w-2xl bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+<div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
     <form method="POST" action="{{ route('admin.cross-references.store') }}" class="space-y-6">
         @csrf
         @if($sourceNode)
@@ -102,4 +102,5 @@
         </div>
     </form>
 </div>
+
 @endsection
