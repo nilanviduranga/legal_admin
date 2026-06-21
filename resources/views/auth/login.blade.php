@@ -229,6 +229,15 @@
                     <p class="text-sm" style="color:#5A8AB0">Sign in to access the admin panel</p>
                 </div>
 
+                @if(session('session_expired'))
+                <div class="mb-6 flex items-start gap-3 rounded-xl px-4 py-3" style="background: rgba(234,179,8,0.12); border: 1px solid rgba(234,179,8,0.3);">
+                    <svg class="w-4 h-4 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" style="color:#FCD34D">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 102 0V6zm-1 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                    </svg>
+                    <p class="text-sm" style="color:#FDE68A">Your session expired. Please sign in again.</p>
+                </div>
+                @endif
+
                 @if($errors->any())
                 <div class="mb-6 flex items-start gap-3 rounded-xl px-4 py-3" style="background: rgba(220,38,38,0.12); border: 1px solid rgba(220,38,38,0.3);">
                     <svg class="w-4 h-4 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" style="color:#F87171">
