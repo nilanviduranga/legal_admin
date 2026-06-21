@@ -21,19 +21,35 @@ class LegalNodeController extends Controller
     {
         $request->validate(['act_id' => 'required|exists:acts,act_id']);
 
-        $nodes = LegalNode::where('act_id', $request->integer('act_id'))
-            ->orderBy('level')
+        $flat = LegalNode::where('act_id', $request->integer('act_id'))
             ->orderBy('sort_order')
-            ->get(['node_id', 'node_type', 'node_no', 'heading', 'level'])
-            ->map(fn ($n) => [
-                'node_id' => $n->node_id,
-                'label'   => str_repeat('  ', $n->level - 1)
-                             . $n->node_type
-                             . ($n->node_no ? ' ' . $n->node_no : '')
-                             . ($n->heading ? ' — ' . Str::limit($n->heading, 60) : ''),
-            ]);
+            ->get(['node_id', 'parent_node_id', 'node_type', 'node_no', 'heading', 'level', 'text_content']);
 
-        return response()->json($nodes);
+        // Group by parent so we can do a DFS walk: parent first, then its children
+        $byParent = $flat->groupBy(fn ($n) => $n->parent_node_id ?? '');
+
+        $result = [];
+        $traverse = function ($parentKey) use (&$traverse, $byParent, &$result) {
+            foreach ($byParent->get($parentKey, collect()) as $n) {
+                $result[] = [
+                    'node_id'        => $n->node_id,
+                    'parent_node_id' => $n->parent_node_id,
+                    'node_type'      => $n->node_type,
+                    'node_no'        => $n->node_no,
+                    'heading'        => $n->heading,
+                    'level'          => $n->level,
+                    'text_content'   => $n->text_content,
+                    'label'          => str_repeat('  ', $n->level - 1)
+                                       . $n->node_type
+                                       . ($n->node_no ? ' ' . $n->node_no : '')
+                                       . ($n->heading ? ' — ' . Str::limit($n->heading, 60) : ''),
+                ];
+                $traverse($n->node_id);
+            }
+        };
+        $traverse(''); // '' is the key Laravel uses for null parent_node_id
+
+        return response()->json($result);
     }
 
     public function create(Request $request): View

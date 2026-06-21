@@ -20,6 +20,7 @@ Route::prefix('v1')->group(function () {
     Route::get('nodes/leaf', [LegalNodeApiController::class, 'leafNodes']);
     Route::get('nodes/{node}/children', [LegalNodeApiController::class, 'children']);
     Route::get('nodes/{node}/law-path', [LegalNodeApiController::class, 'lawPath']);
+    Route::get('nodes/{node}/law-context', [LegalNodeApiController::class, 'lawContext']);
     Route::put('nodes/{node}', [LegalNodeApiController::class, 'update']);
     Route::get('nodes/{node}/references', [LegalNodeApiController::class, 'references']);
 

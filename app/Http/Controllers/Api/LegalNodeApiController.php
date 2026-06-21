@@ -42,32 +42,88 @@ class LegalNodeApiController extends Controller
     public function lawPath(LegalNode $node): JsonResponse
     {
         $ancestors = [];
-        $current = $node;
+        $current   = $node;
 
         while ($current) {
-            $label = trim($current->node_type . ($current->node_no ? ' ' . $current->node_no : ''));
-            $body = trim(($current->heading ? $current->heading . "\n" : '') . ($current->text_content ?? ''));
-
             array_unshift($ancestors, [
-                'node_id'    => $current->node_id,
-                'node_type'  => $current->node_type,
-                'node_no'    => $current->node_no,
-                'heading'    => $current->heading,
+                'node_id'      => $current->node_id,
+                'node_type'    => $current->node_type,
+                'node_no'      => $current->node_no,
+                'heading'      => $current->heading,
                 'text_content' => $current->text_content,
-                'level'      => $current->level,
-                'label'      => $label,
-                'segment'    => $label . "\n" . $body,
+                'level'        => $current->level,
             ]);
-
             $current = $current->parent_node_id ? $current->parent : null;
         }
 
         return response()->json([
             'node_id'   => $node->node_id,
-            // 'act_id'    => $node->act_id,
-            // 'ancestors' => $ancestors,
-            'law_text'  => implode("\n\n", array_column($ancestors, 'segment')),
+            'law_text'  => $this->buildLawText($node),
+            'ancestors' => $ancestors,
         ]);
+    }
+
+    /**
+     * GET /api/v1/nodes/{node}/law-context
+     * Returns the node's full law text (ancestor chain) together with the full
+     * law text of every cross-referenced node (both outgoing and incoming).
+     * Used by the AI agent so a single HTTP call gives primary + supporting law.
+     */
+    public function lawContext(LegalNode $node): JsonResponse
+    {
+        $lawText = $this->buildLawText($node);
+
+        $crossRefs = [];
+        $seen = [$node->node_id];
+
+        foreach ($node->outgoingReferences()->with('targetNode')->get() as $ref) {
+            $target = $ref->targetNode;
+            if (! $target || in_array($target->node_id, $seen, true)) {
+                continue;
+            }
+            $seen[] = $target->node_id;
+            $crossRefs[] = [
+                'node_id'        => $target->node_id,
+                'reference_type' => $ref->reference_type,
+                'reference_text' => $ref->reference_text,
+                'law_text'       => $this->buildLawText($target),
+            ];
+        }
+
+        foreach ($node->incomingReferences()->with('sourceNode')->get() as $ref) {
+            $source = $ref->sourceNode;
+            if (! $source || in_array($source->node_id, $seen, true)) {
+                continue;
+            }
+            $seen[] = $source->node_id;
+            $crossRefs[] = [
+                'node_id'        => $source->node_id,
+                'reference_type' => $ref->reference_type,
+                'reference_text' => $ref->reference_text,
+                'law_text'       => $this->buildLawText($source),
+            ];
+        }
+
+        return response()->json([
+            'node_id'          => $node->node_id,
+            'law_text'         => $lawText,
+            'cross_references' => $crossRefs,
+        ]);
+    }
+
+    private function buildLawText(LegalNode $node): string
+    {
+        $ancestors = [];
+        $current = $node;
+
+        while ($current) {
+            $label = trim($current->node_type . ($current->node_no ? ' ' . $current->node_no : ''));
+            $body  = trim(($current->heading ? $current->heading . "\n" : '') . ($current->text_content ?? ''));
+            array_unshift($ancestors, $label . "\n" . $body);
+            $current = $current->parent_node_id ? $current->parent : null;
+        }
+
+        return implode("\n\n", $ancestors);
     }
 
     public function children(LegalNode $node): JsonResponse
