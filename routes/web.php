@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Admin\ActController;
+use App\Http\Controllers\Admin\CaseLawController;
 use App\Http\Controllers\Admin\CrossReferenceController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GazetteController;
@@ -44,6 +45,11 @@ Route::prefix('admin')
         // Acts
         Route::resource('acts', ActController::class)
             ->parameters(['acts' => 'act']);
+
+        // Case Laws
+        Route::resource('case-laws', CaseLawController::class)
+            ->parameters(['case-laws' => 'caseLaw'])
+            ->except(['create', 'edit']);
 
         // Legal nodes (shallow nested + standalone)
         Route::get('acts/{act}/nodes', [LegalNodeController::class, 'index'])->name('acts.nodes.index');

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\ActApiController;
+use App\Http\Controllers\Api\CaseLawApiController;
 use App\Http\Controllers\Api\CrossReferenceApiController;
 use App\Http\Controllers\Api\LegalNodeApiController;
 use App\Http\Controllers\Api\PublicActController;
@@ -27,6 +28,10 @@ Route::prefix('v1')->group(function () {
     // Cross references
     Route::post('cross-references', [CrossReferenceApiController::class, 'store']);
     Route::delete('cross-references/{crossReference}', [CrossReferenceApiController::class, 'destroy']);
+
+    // Case laws (used by legal-rag for indexing and by admin panel modal)
+    Route::get('case-laws', [CaseLawApiController::class, 'index']);
+    Route::get('case-laws/{caseLaw}', [CaseLawApiController::class, 'show']);
 });
 
 // ─── Public API (read-only, no auth — for external sites) ──────────────────
