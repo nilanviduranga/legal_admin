@@ -39,6 +39,7 @@
                     ['table' => 'legal_nodes',       'label' => 'Legal Nodes (total)'],
                     ['table' => 'soft_deleted',      'label' => 'Soft-deleted Nodes'],
                     ['table' => 'cross_references',  'label' => 'Cross-references'],
+                    ['table' => 'case_laws',         'label' => 'Law Cases'],
                 ] as $row)
                 <div class="rounded-xl bg-gray-50 px-4 py-3">
                     <p class="text-xs text-gray-500">{{ $row['label'] }}</p>
