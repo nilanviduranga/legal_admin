@@ -94,29 +94,6 @@
         </div>
     </div>
 
-    {{-- ─── External panels ─────────────────────────────────────────────── --}}
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100">
-            <h2 class="text-sm font-semibold text-gray-900">Other Panels</h2>
-        </div>
-        <div class="px-6 py-5 space-y-3">
-            <div class="flex items-center justify-between p-4 rounded-xl bg-gray-50">
-                <div>
-                    <p class="text-sm font-medium text-gray-800">Filament CMS</p>
-                    <p class="text-xs text-gray-400 mt-0.5">User management, Eloquent resource explorer</p>
-                </div>
-                <a href="{{ url('/cms') }}"
-                   target="_blank"
-                   class="inline-flex items-center gap-1.5 rounded-xl bg-violet-600 px-4 py-2 text-xs font-semibold text-white hover:bg-violet-700 transition-colors">
-                    Open
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/>
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </div>
-
     {{-- ─── Account ─────────────────────────────────────────────────────── --}}
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100">

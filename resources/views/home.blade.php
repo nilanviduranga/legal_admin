@@ -85,7 +85,6 @@
 
         <p class="note">Use the admin panel to manage acts, law sections, chat data, and admin users.</p>
         <a class="admin-link" href="{{ route('admin.acts.index') }}" style="margin-right:8px">Law Admin</a>
-        <a class="admin-link" href="{{ url('/cms') }}" style="background:#6366f1">Filament CMS</a>
     </main>
 </body>
 </html>

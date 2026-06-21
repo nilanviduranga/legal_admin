@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\LegalNodeController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\StructureController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -79,4 +80,8 @@ Route::prefix('admin')
 
         // Settings
         Route::get('settings', [SettingsController::class, 'index'])->name('settings');
+
+        // User management
+        Route::resource('users', UserController::class)
+            ->parameters(['users' => 'user']);
     });
