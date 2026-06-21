@@ -3462,6 +3462,7 @@ class ConsumerAffairsActSeeder extends Seeder
     private function seedSchedule(Act $act): void
     {
         $schedule = $this->node($act, null, 'SCHEDULE', null, 'Section 3(4)', 'SCHEDULE');
+        $this->sections['SCHEDULE'] = $schedule->node_id;
 
         // 1.
         $p1 = $this->node(
@@ -3700,7 +3701,84 @@ class ConsumerAffairsActSeeder extends Seeder
 
     private function seedCrossReferences(): void
     {
-        // Cross-references can be seeded here mapping text mentions to actual node IDs
-        // using the $this->sections array map for corresponding section numbers.
+        // Each tuple: [source_section_key, target_section_key, reference_type, reference_text]
+        // Keys match $this->sections: section numbers as strings, 'PREAMBLE', 'SCHEDULE'.
+        $refs = [
+            // Part I — Establishment
+            ['2',        '3',        'refers_to',  's 2(1): "consist of the persons who are for the time being members of the Authority under section 3"'],
+            ['3',        'SCHEDULE', 'refers_to',  's 3(4): "provisions of the Schedule to this Act shall have effect in relation to the term of office of the members"'],
+            ['5',        '52',       'refers_to',  's 5: "Director-General of the Authority appointed under section 52 shall act as the Secretary"'],
+
+            // Part II — Regulation of Trade
+            ['9',        '14',       'refers_to',  's 9(c): "assist and encourage associations of traders to enter into agreements with the Authority for the purposes described in section 14"'],
+            ['11',       '10',       'refers_to',  's 11: "sell any goods above the price marked on the goods in accordance with a direction issued under section 10"'],
+            ['13',       '12',       'refers_to',  's 13(1)(a): "does not conform to the standards and specifications determined under section 12"'],
+            ['15',       '10',       'refers_to',  's 15(2)(c): "contrary to any general or special direction issued to him by the Authority under section 10"'],
+            ['20',       '19',       'refers_to',  's 20(1): "any reference is made to the Council by the Director-General under section 19"'],
+            ['20',       '21',       'subject_to', 's 20(3): "subject to the provisions of section 21, cause its decision with its reasons to be published"'],
+            ['21',       '20',       'refers_to',  's 21(1): "before making a recommendation under subsection (4) of section 20"'],
+            ['22',       '19',       'refers_to',  's 22(2): "having regard to the provisions of section 19 should be investigated into by the Council"'],
+            ['22',       '20',       'refers_to',  's 22(2): "the provisions of sections 20 and 21 shall, mutatis mutandis, apply to such investigation"'],
+            ['22',       '21',       'refers_to',  's 22(2): "the provisions of sections 20 and 21 shall, mutatis mutandis, apply to such investigation"'],
+            ['32',       '12',       'refers_to',  's 32(1)(c): "goods supplied or services provided will be in conformity with the standards and specifications determined under section 12"'],
+
+            // Part III — Promotion of Competition
+            ['35',       '34',       'refers_to',  's 35: "For the purpose of section 34, an anti-competitive practice shall be deemed to prevail"'],
+            ['36',       '34',       'refers_to',  's 36(1): "persons interested in a matter which forms the subject of an investigation under section 34"'],
+            ['36',       '33',       'refers_to',  's 36(2): "For the purpose of conducting an investigation under section 33" (verbatim Act text; cf. s 34)'],
+            ['37',       '34',       'refers_to',  's 37(1): "Upon the conclusion of an investigation under section 34, the Authority may make an application to the Council"'],
+            ['38',       '34',       'refers_to',  's 38: "where the Authority decides not to make an application to the Council in respect of investigation under section 34"'],
+            ['38',       '37',       'refers_to',  's 38: "where the Authority decides not to make an application to the Council under section 37"'],
+
+            // Part IV — Consumer Affairs Council
+            ['41',       '37',       'refers_to',  's 41(1): "Where an application is made to the Council under section 37 or section 38"'],
+            ['41',       '38',       'refers_to',  's 41(1): "Where an application is made to the Council under section 37 or section 38"'],
+            ['42',       '41',       'refers_to',  's 42: "The Authority may cause to be published any order made by the Council under section 41"'],
+            ['45',       '43',       'refers_to',  's 45: "If any person upon whom a notice is issued under section 43"'],
+            ['46',       '45',       'refers_to',  's 46(1): "any act or omission in contravention of the provisions of section 45"'],
+
+            // Part V — Fund
+            ['49',       '59',       'refers_to',  's 49(2)(f): "all such sums of money as are credited or transferred to the Fund under section 59"'],
+            ['49',       '73',       'refers_to',  's 49(2)(f): "all such sums of money as are credited or transferred to the Fund under section 59 or section 73"'],
+
+            // Part VII — General
+            ['57',       '56',       'refers_to',  's 57(2): "information contained in a return furnished under section 56"'],
+            ['58',       '16',       'refers_to',  's 58(1)(b): "seize and detain any goods found in contravention of the provisions of section 16 or 17"'],
+            ['58',       '17',       'refers_to',  's 58(1)(b): "seize and detain any goods found in contravention of the provisions of section 16 or 17"'],
+            ['59',       '58',       'refers_to',  's 59(1): "goods seized and detained under paragraph (b) of subsection (1) of section 58"'],
+            ['60',       '15',       'refers_to',  's 60(3): "guilty of an offence by reason of a contravention of the provisions of section 15 or section 16 or section 17"'],
+            ['60',       '16',       'refers_to',  's 60(3): "guilty of an offence by reason of a contravention of the provisions of section 15 or section 16 or section 17"'],
+            ['60',       '17',       'refers_to',  's 60(3): "guilty of an offence by reason of a contravention of the provisions of section 15 or section 16 or section 17"'],
+            ['60',       '18',       'refers_to',  's 60(4): "guilty of an offence by reason of a contravention of the provisions of section 18"'],
+            ['60',       '41',       'refers_to',  's 60(2)(a): "fails or refuses to comply with an order made under paragraph (b) of subsection (1) of section 41"'],
+            ['60',       '56',       'refers_to',  's 60(1)(a)(i): "fails or refuses to furnish a return when required by the Authority to do so under section 56"'],
+            ['60',       '57',       'refers_to',  's 60(1)(a)(ii): "fails or refuses to furnish any information when required to do so by a notice sent under section 57"'],
+            ['60',       '58',       'refers_to',  's 60(1)(c): "obstructs any officer acting in the exercise of his powers under section 58"'],
+            ['60',       '72',       'refers_to',  's 60(5): "any requirements imposed under any such provision, or any regulations made under section 72"'],
+            ['61',       '12',       'refers_to',  's 61(1): "any goods that are being sold do not conform to the standards and specifications laid down under section 12"'],
+            ['62',       '61',       'refers_to',  's 62(1): "conviction for an offence under subsection (4) of section 61"'],
+            ['63',       '61',       'refers_to',  's 63: "every court shall give priority to the disposal of any case filed under section 61"'],
+            ['75',       '39',       'refers_to',  's 75: "\'Council\' means the Consumer Affairs Council established by section 39 of this Act"'],
+
+            // Schedule → Act sections
+            ['SCHEDULE', '3',        'refers_to',  'Sch paras 5 & 6: "having regard to the provisions of section 3 appoint another person"'],
+            ['SCHEDULE', '71',       'refers_to',  'Sch para 8(4): "any regulation made under section 71 the Authority may regulate the procedure" (verbatim Act text)'],
+        ];
+
+        foreach ($refs as [$srcKey, $tgtKey, $type, $text]) {
+            if (!isset($this->sections[$srcKey]) || !isset($this->sections[$tgtKey])) {
+                continue;
+            }
+            CrossReference::firstOrCreate(
+                [
+                    'source_node_id' => $this->sections[$srcKey],
+                    'target_node_id' => $this->sections[$tgtKey],
+                ],
+                [
+                    'reference_type' => $type,
+                    'reference_text' => $text,
+                ]
+            );
+        }
     }
 }
