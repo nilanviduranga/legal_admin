@@ -1,143 +1,100 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
   <defs>
-    <linearGradient id="shieldOuter" x1="100" y1="0" x2="100" y2="220" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#1A3A5C"/>
-      <stop offset="100%" stop-color="#0A1E38"/>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D1B3E;stop-opacity:1"/>
+      <stop offset="50%" style="stop-color:#1A3A5C;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#0B2447;stop-opacity:1"/>
     </linearGradient>
-    <linearGradient id="shieldInner" x1="100" y1="20" x2="100" y2="200" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#C8D8EC"/>
-      <stop offset="50%" stop-color="#E8F0F8"/>
-      <stop offset="100%" stop-color="#B0C4DC"/>
-    </linearGradient>
-    <linearGradient id="scalesGrad" x1="100" y1="60" x2="100" y2="160" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#1A3A5C"/>
-      <stop offset="100%" stop-color="#0D2840"/>
+    <linearGradient id="shieldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#22D3EE;stop-opacity:1"/>
     </linearGradient>
     <filter id="glow">
-      <feGaussianBlur stdDeviation="2" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
-    <filter id="glowBlue">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
-      <feFlood flood-color="#4DA3FF" flood-opacity="0.6" result="color"/>
-      <feComposite in="color" in2="blur" operator="in" result="shadow"/>
-      <feComposite in="SourceGraphic" in2="shadow" operator="over"/>
+    <filter id="glowSm">
+      <feGaussianBlur stdDeviation="0.8" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
 
-  <!-- Shield outer shape -->
-  <path d="M100 8 L182 38 L182 110 C182 158 145 195 100 212 C55 195 18 158 18 110 L18 38 Z" fill="url(#shieldOuter)" stroke="#2E6BA8" stroke-width="2.5"/>
+  <!-- Shield body -->
+  <path d="M50 5 L88 18 L88 52 C88 72 71 87 50 95 C29 87 12 72 12 52 L12 18 Z"
+        fill="url(#shieldGrad)" stroke="url(#shieldBorder)" stroke-width="1.5"/>
 
-  <!-- Shield border highlight -->
-  <path d="M100 14 L176 42 L176 110 C176 155 141 190 100 206 C59 190 24 155 24 110 L24 42 Z" fill="none" stroke="#4D8CC0" stroke-width="1.5" opacity="0.6"/>
+  <!-- Shield inner border / bevel -->
+  <path d="M50 10 L83 22 L83 52 C83 69 68 83 50 90 C32 83 17 69 17 52 L17 22 Z"
+        fill="none" stroke="rgba(96,165,250,0.20)" stroke-width="0.8"/>
 
-  <!-- Shield inner silver panel -->
-  <path d="M100 26 L168 50 L168 108 C168 148 137 180 100 194 C63 180 32 148 32 108 L32 50 Z" fill="url(#shieldInner)" opacity="0.95"/>
-
-  <!-- Circuit board lines - horizontal & vertical -->
-  <g stroke="#2A6FAA" stroke-width="1.2" opacity="0.55" filter="url(#glow)">
-    <!-- Top area lines -->
-    <line x1="55" y1="55" x2="80" y2="55"/>
-    <line x1="120" y1="55" x2="145" y2="55"/>
-    <line x1="55" y1="65" x2="70" y2="65"/>
-    <line x1="130" y1="65" x2="145" y2="65"/>
-    <!-- Middle side lines -->
-    <line x1="35" y1="95" x2="58" y2="95"/>
-    <line x1="142" y1="95" x2="165" y2="95"/>
-    <line x1="35" y1="115" x2="55" y2="115"/>
-    <line x1="145" y1="115" x2="165" y2="115"/>
-    <!-- Bottom area lines -->
-    <line x1="50" y1="155" x2="75" y2="155"/>
-    <line x1="125" y1="155" x2="150" y2="155"/>
-    <line x1="60" y1="165" x2="80" y2="165"/>
-    <line x1="120" y1="165" x2="140" y2="165"/>
-    <!-- Vertical connectors -->
-    <line x1="55" y1="55" x2="55" y2="70"/>
-    <line x1="145" y1="55" x2="145" y2="70"/>
-    <line x1="35" y1="95" x2="35" y2="115"/>
-    <line x1="165" y1="95" x2="165" y2="115"/>
-    <line x1="60" y1="155" x2="60" y2="165"/>
-    <line x1="140" y1="155" x2="140" y2="165"/>
-    <!-- Corner connections -->
-    <line x1="70" y1="65" x2="70" y2="55"/>
-    <line x1="130" y1="65" x2="130" y2="55"/>
-    <line x1="55" y1="95" x2="55" y2="115"/>
-    <line x1="145" y1="95" x2="145" y2="115"/>
-    <line x1="75" y1="155" x2="75" y2="165"/>
-    <line x1="125" y1="155" x2="125" y2="165"/>
-    <!-- Center web -->
-    <line x1="80" y1="78" x2="95" y2="85"/>
-    <line x1="120" y1="78" x2="105" y2="85"/>
-    <line x1="80" y1="140" x2="95" y2="133"/>
-    <line x1="120" y1="140" x2="105" y2="133"/>
+  <!-- Circuit nodes (small dots) -->
+  <g fill="#60A5FA" filter="url(#glowSm)">
+    <circle cx="50" cy="22" r="2.2"/>
+    <circle cx="32" cy="30" r="1.8"/>
+    <circle cx="68" cy="30" r="1.8"/>
+    <circle cx="24" cy="50" r="1.8"/>
+    <circle cx="76" cy="50" r="1.8"/>
+    <circle cx="32" cy="68" r="1.8"/>
+    <circle cx="68" cy="68" r="1.8"/>
+    <circle cx="50" cy="76" r="1.8"/>
+    <!-- Extra corner nodes -->
+    <circle cx="40" cy="26" r="1.2"/>
+    <circle cx="60" cy="26" r="1.2"/>
+    <circle cx="28" cy="40" r="1.2"/>
+    <circle cx="72" cy="40" r="1.2"/>
+    <circle cx="28" cy="60" r="1.2"/>
+    <circle cx="72" cy="60" r="1.2"/>
+    <circle cx="40" cy="72" r="1.2"/>
+    <circle cx="60" cy="72" r="1.2"/>
   </g>
 
-  <!-- Circuit nodes (dots) -->
-  <g fill="#3B8FD4" filter="url(#glowBlue)">
-    <!-- Top nodes -->
-    <circle cx="55" cy="55" r="3.5"/>
-    <circle cx="70" cy="55" r="3.5"/>
-    <circle cx="100" cy="48" r="3.5"/>
-    <circle cx="130" cy="55" r="3.5"/>
-    <circle cx="145" cy="55" r="3.5"/>
-    <circle cx="55" cy="70" r="2.5"/>
-    <circle cx="145" cy="70" r="2.5"/>
-    <!-- Side nodes -->
-    <circle cx="35" cy="95" r="3.5"/>
-    <circle cx="35" cy="115" r="3.5"/>
-    <circle cx="165" cy="95" r="3.5"/>
-    <circle cx="165" cy="115" r="3.5"/>
-    <circle cx="55" cy="95" r="2.5"/>
-    <circle cx="55" cy="115" r="2.5"/>
-    <circle cx="145" cy="95" r="2.5"/>
-    <circle cx="145" cy="115" r="2.5"/>
-    <!-- Bottom nodes -->
-    <circle cx="50" cy="155" r="3.5"/>
-    <circle cx="75" cy="155" r="3.5"/>
-    <circle cx="125" cy="155" r="3.5"/>
-    <circle cx="150" cy="155" r="3.5"/>
-    <circle cx="60" cy="165" r="2.5"/>
-    <circle cx="140" cy="165" r="2.5"/>
-    <!-- Center web nodes -->
-    <circle cx="80" cy="78" r="2.5"/>
-    <circle cx="120" cy="78" r="2.5"/>
-    <circle cx="80" cy="140" r="2.5"/>
-    <circle cx="120" cy="140" r="2.5"/>
-    <circle cx="100" cy="162" r="3"/>
+  <!-- Circuit lines connecting nodes -->
+  <g stroke="rgba(96,165,250,0.35)" stroke-width="0.8" fill="none">
+    <line x1="50" y1="22" x2="40" y2="26"/>
+    <line x1="50" y1="22" x2="60" y2="26"/>
+    <line x1="40" y1="26" x2="32" y2="30"/>
+    <line x1="60" y1="26" x2="68" y2="30"/>
+    <line x1="32" y1="30" x2="28" y2="40"/>
+    <line x1="68" y1="30" x2="72" y2="40"/>
+    <line x1="28" y1="40" x2="24" y2="50"/>
+    <line x1="72" y1="40" x2="76" y2="50"/>
+    <line x1="24" y1="50" x2="28" y2="60"/>
+    <line x1="76" y1="50" x2="72" y2="60"/>
+    <line x1="28" y1="60" x2="32" y2="68"/>
+    <line x1="72" y1="60" x2="68" y2="68"/>
+    <line x1="32" y1="68" x2="40" y2="72"/>
+    <line x1="68" y1="68" x2="60" y2="72"/>
+    <line x1="40" y1="72" x2="50" y2="76"/>
+    <line x1="60" y1="72" x2="50" y2="76"/>
+    <!-- Cross connections -->
+    <line x1="40" y1="26" x2="28" y2="40"/>
+    <line x1="60" y1="26" x2="72" y2="40"/>
+    <line x1="28" y1="60" x2="40" y2="72"/>
+    <line x1="72" y1="60" x2="60" y2="72"/>
   </g>
 
-  <!-- Justice Scales - pole -->
-  <rect x="98" y="78" width="4" height="72" rx="2" fill="url(#scalesGrad)"/>
+  <!-- Scales of justice (centered) -->
+  <g filter="url(#glow)">
+    <!-- Center post -->
+    <line x1="50" y1="30" x2="50" y2="70" stroke="#93C5FD" stroke-width="2" stroke-linecap="round"/>
 
-  <!-- Top crossbar -->
-  <rect x="68" y="82" width="64" height="5" rx="2.5" fill="url(#scalesGrad)"/>
+    <!-- Top crossbar -->
+    <line x1="34" y1="38" x2="66" y2="38" stroke="#93C5FD" stroke-width="2" stroke-linecap="round"/>
 
-  <!-- Scale chains left -->
-  <line x1="76" y1="87" x2="76" y2="108" stroke="#1A3A5C" stroke-width="2"/>
-  <!-- Scale chains right -->
-  <line x1="124" y1="87" x2="124" y2="108" stroke="#1A3A5C" stroke-width="2"/>
+    <!-- Left chain -->
+    <line x1="36" y1="38" x2="34" y2="54" stroke="#93C5FD" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Right chain -->
+    <line x1="64" y1="38" x2="66" y2="54" stroke="#93C5FD" stroke-width="1.5" stroke-linecap="round"/>
 
-  <!-- Left pan -->
-  <path d="M60 108 Q76 118 92 108" stroke="#1A3A5C" stroke-width="2.5" fill="none"/>
-  <line x1="60" y1="108" x2="92" y2="108" stroke="#1A3A5C" stroke-width="1.5"/>
+    <!-- Left pan -->
+    <path d="M28 54 Q34 58 40 54" stroke="#60A5FA" stroke-width="2" fill="rgba(59,130,246,0.25)" stroke-linecap="round"/>
+    <!-- Right pan -->
+    <path d="M60 54 Q66 58 72 54" stroke="#60A5FA" stroke-width="2" fill="rgba(59,130,246,0.25)" stroke-linecap="round"/>
 
-  <!-- Right pan -->
-  <path d="M108 108 Q124 118 140 108" stroke="#1A3A5C" stroke-width="2.5" fill="none"/>
-  <line x1="108" y1="108" x2="140" y2="108" stroke="#1A3A5C" stroke-width="1.5"/>
+    <!-- Base triangle -->
+    <path d="M44 70 L56 70 L50 67 Z" fill="#60A5FA" opacity="0.8"/>
 
-  <!-- Scale pan connectors -->
-  <line x1="60" y1="108" x2="76" y2="87" stroke="#1A3A5C" stroke-width="1.5"/>
-  <line x1="92" y1="108" x2="76" y2="87" stroke="#1A3A5C" stroke-width="1.5"/>
-  <line x1="108" y1="108" x2="124" y2="87" stroke="#1A3A5C" stroke-width="1.5"/>
-  <line x1="140" y1="108" x2="124" y2="87" stroke="#1A3A5C" stroke-width="1.5"/>
-
-  <!-- Base -->
-  <rect x="86" y="148" width="28" height="5" rx="2.5" fill="url(#scalesGrad)"/>
-  <rect x="80" y="152" width="40" height="4" rx="2" fill="url(#scalesGrad)"/>
-
-  <!-- Circuit center hub -->
-  <circle cx="100" cy="85" r="5" fill="#1A4A7A" stroke="#3B8FD4" stroke-width="1.5"/>
-
-  <!-- Outer glow ring -->
-  <path d="M100 8 L182 38 L182 110 C182 158 145 195 100 212 C55 195 18 158 18 110 L18 38 Z" fill="none" stroke="#2A7FBF" stroke-width="1" opacity="0.4"/>
+    <!-- Top pivot circle -->
+    <circle cx="50" cy="30" r="2.5" fill="#3B82F6" stroke="#93C5FD" stroke-width="0.8"/>
+  </g>
 </svg>

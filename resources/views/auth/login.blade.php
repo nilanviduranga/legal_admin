@@ -59,13 +59,28 @@
             0%, 100% { opacity: 0.4; transform: scale(1); }
             50%       { opacity: 1;   transform: scale(1.5); }
         }
-        /* Logo breathe */
+        /* Logo breathe + Y-axis rotate */
         .logo-breathe {
-            animation: logoBreathe 4s ease-in-out infinite;
+            animation: logoBreathe 4s ease-in-out infinite, logoRotateY 6s linear infinite;
         }
         @keyframes logoBreathe {
             0%, 100% { filter: drop-shadow(0 0 14px rgba(77,163,255,0.5)); }
             50%       { filter: drop-shadow(0 0 28px rgba(77,163,255,0.85)); }
+        }
+        @keyframes logoRotateY {
+            from { transform: rotateY(0deg); }
+            to   { transform: rotateY(360deg); }
+        }
+        /* Typewriter cursor */
+        .typewriter-cursor {
+            display: inline-block;
+            color: #4DA3FF;
+            font-weight: 300;
+            animation: cursorBlink 0.75s step-end infinite;
+        }
+        @keyframes cursorBlink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0; }
         }
         /* Shimmer line */
         .shimmer-line {
@@ -104,13 +119,13 @@
         <div class="absolute top-1/3 left-32 w-1.5 h-1.5 rounded-full node-pulse" style="background:#2680F0; animation-delay:1.2s;"></div>
 
         <!-- Content -->
-        <div class="relative z-10">
+        <div class="relative z-10 text-center">
             <!-- Logo + Name -->
-            <div class="flex items-center gap-4 mb-14">
+            <div class="flex items-center justify-center gap-4 mb-14">
                 <div class="logo-breathe">
-                    <img src="{{ asset('images/ludexora-logo.svg') }}" alt="Ludexora" class="w-16 h-16 object-contain"/>
+                    <img src="{{ asset('images/ludexora-logo.svg') }}" alt="Ludexora" class="w-20 h-20 object-contain"/>
                 </div>
-                <div>
+                <div class="text-left">
                     <p class="font-extrabold text-3xl leading-none tracking-widest" style="color:#E2EBF8; letter-spacing:0.12em">LUDEXORA</p>
                     <div class="shimmer-line h-px mt-1.5 mb-1 w-40 rounded-full"></div>
                     <p class="text-sm" style="color:#3B8FD4">Legal Intelligence Platform</p>
@@ -124,8 +139,8 @@
                     Management System
                 </span>
             </h1>
-            <p class="text-base leading-relaxed max-w-xs" style="color:#5A8AB0;">
-                Manage gazettes, acts, legal nodes, and cross-references. Import PDF legislation and search across the full legal corpus.
+            <p class="text-base leading-relaxed mx-auto max-w-xs" style="color:#5A8AB0; min-height:4.5rem;">
+                <span id="typewriter-text"></span><span class="typewriter-cursor">|</span>
             </p>
 
             <!-- Feature cards -->
@@ -181,7 +196,7 @@
         </div>
 
         <!-- Bottom legal note -->
-        <div class="relative z-10">
+        <div class="relative z-10 text-center">
             <p class="text-xs" style="color:#2A5280;">Consumer Affairs Authority &mdash; Secured Administrative Access</p>
         </div>
     </div>
@@ -294,5 +309,40 @@
     </div>
 
 </div>
+
+<script>
+(function () {
+    var text = "Manage gazettes, acts, legal nodes, and cross-references. Import PDF legislation and search across the full legal corpus.";
+    var el   = document.getElementById('typewriter-text');
+    var i    = 0;
+    var deleting = false;
+
+    function tick() {
+        if (!deleting) {
+            // Type forward
+            el.textContent = text.substring(0, i + 1);
+            i++;
+            if (i === text.length) {
+                deleting = true;
+                setTimeout(tick, 1800); // pause before erasing
+                return;
+            }
+            setTimeout(tick, 55);
+        } else {
+            // Erase fast
+            el.textContent = text.substring(0, i - 1);
+            i--;
+            if (i === 0) {
+                deleting = false;
+                setTimeout(tick, 0); // instant restart
+                return;
+            }
+            setTimeout(tick, 22);
+        }
+    }
+
+    tick();
+})();
+</script>
 </body>
 </html>
