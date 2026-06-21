@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Act;
+use App\Models\CaseLaw;
 use App\Models\CrossReference;
 use App\Models\Gazette;
 use App\Models\LegalNode;
@@ -20,6 +21,7 @@ class DashboardController extends Controller
             'acts'       => Act::count(),
             'nodes'      => LegalNode::count(),
             'references' => CrossReference::count(),
+            'case_laws'  => CaseLaw::count(),
         ];
 
         $actsByStatus = Act::selectRaw('status, COUNT(*) as count')

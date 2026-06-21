@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Act;
+use App\Models\CaseLaw;
 use App\Models\CrossReference;
 use App\Models\Gazette;
 use App\Models\LegalNode;
@@ -22,6 +23,7 @@ class SettingsController extends Controller
             'legal_nodes'      => LegalNode::withTrashed()->count(),
             'soft_deleted'     => LegalNode::onlyTrashed()->count(),
             'cross_references' => CrossReference::count(),
+            'case_laws'        => CaseLaw::count(),
         ];
 
         $dbStatus = 'connected';

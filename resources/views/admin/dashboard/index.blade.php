@@ -15,7 +15,7 @@
 @section('content')
 
 {{-- ─── Stat cards ──────────────────────────────────────────────────────── --}}
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+<div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
 
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
         <div class="flex items-start justify-between">
@@ -79,6 +79,23 @@
             </div>
         </div>
         <a href="{{ route('admin.cross-references.index') }}" class="mt-3 inline-flex items-center text-xs text-amber-600 hover:text-amber-700 font-medium">
+            View all <svg class="w-3 h-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+        </a>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+        <div class="flex items-start justify-between">
+            <div>
+                <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">Law Cases</p>
+                <p class="text-3xl font-bold text-gray-900 mt-1">{{ number_format($stats['case_laws']) }}</p>
+            </div>
+            <div class="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0c-1.472 0-2.882.265-4.185.75M12 20.25c1.472 0 2.882.265 4.185.75M18.75 4.97A48.416 48.416 0 0012 4.5c-2.291 0-4.545.16-6.75.47m13.5 0c1.01.143 2.01.317 3 .52m-3-.52l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.988 5.988 0 01-2.031.352 5.988 5.988 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L18.75 4.97zm-16.5.52c.99-.203 1.99-.377 3-.52m0 0l2.62 10.726c.122.499-.106 1.028-.589 1.202a5.989 5.989 0 01-2.031.352 5.989 5.989 0 01-2.031-.352c-.483-.174-.711-.703-.59-1.202L5.25 4.97z"/>
+                </svg>
+            </div>
+        </div>
+        <a href="{{ route('admin.case-laws.index') }}" class="mt-3 inline-flex items-center text-xs text-rose-600 hover:text-rose-700 font-medium">
             View all <svg class="w-3 h-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
         </a>
     </div>
