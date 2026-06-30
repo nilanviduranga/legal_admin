@@ -95,6 +95,67 @@
         </div>
     </div>
 
+    {{-- ─── Vector Store ──────────────────────────────────────────────────── --}}
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100">
+            <h2 class="text-sm font-semibold text-gray-900">Vector Store</h2>
+            <p class="text-xs text-gray-400 mt-0.5">Rebuild FAISS indexes and AI metadata on the RAG service</p>
+        </div>
+        <div class="px-6 py-5 space-y-3">
+
+            {{-- Full rebuild --}}
+            <div class="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
+                <div>
+                    <p class="text-sm font-medium text-gray-700">Full Rebuild</p>
+                    <p class="text-xs text-gray-400 mt-0.5">Statutes + case laws + act metadata + structure cache (slow)</p>
+                </div>
+                <button type="button" data-rag-action="{{ route('admin.settings.vectordb.rebuild') }}" data-result="result-full"
+                        class="rag-btn rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors disabled:opacity-50">
+                    Rebuild All
+                </button>
+            </div>
+
+            {{-- Case laws only --}}
+            <div class="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
+                <div>
+                    <p class="text-sm font-medium text-gray-700">Rebuild Case Laws</p>
+                    <p class="text-xs text-gray-400 mt-0.5">Only the case law FAISS index</p>
+                </div>
+                <button type="button" data-rag-action="{{ route('admin.settings.vectordb.rebuild-caselaws') }}" data-result="result-caselaws"
+                        class="rag-btn rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors disabled:opacity-50">
+                    Rebuild
+                </button>
+            </div>
+
+            {{-- Act metadata --}}
+            <div class="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
+                <div>
+                    <p class="text-sm font-medium text-gray-700">Rebuild Act Metadata</p>
+                    <p class="text-xs text-gray-400 mt-0.5">AI summaries + act-level FAISS index</p>
+                </div>
+                <button type="button" data-rag-action="{{ route('admin.settings.vectordb.rebuild-act-metadata') }}" data-result="result-actmeta"
+                        class="rag-btn rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors disabled:opacity-50">
+                    Rebuild
+                </button>
+            </div>
+
+            {{-- Warm cache --}}
+            <div class="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
+                <div>
+                    <p class="text-sm font-medium text-gray-700">Warm Structure Cache</p>
+                    <p class="text-xs text-gray-400 mt-0.5">Pre-compute act statistics for faster queries</p>
+                </div>
+                <button type="button" data-rag-action="{{ route('admin.settings.vectordb.warm-structure-cache') }}" data-result="result-warmcache"
+                        class="rag-btn rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors disabled:opacity-50">
+                    Warm
+                </button>
+            </div>
+
+            {{-- Result area --}}
+            <div id="rag-result" class="hidden rounded-xl px-4 py-3 text-xs font-mono whitespace-pre-wrap break-all"></div>
+        </div>
+    </div>
+
     {{-- ─── Account ─────────────────────────────────────────────────────── --}}
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100">
@@ -124,3 +185,44 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+    const resultBox = document.getElementById('rag-result');
+
+    document.querySelectorAll('.rag-btn').forEach(btn => {
+        btn.addEventListener('click', async function () {
+            const url      = this.dataset.ragAction;
+            const origText = this.textContent.trim();
+
+            document.querySelectorAll('.rag-btn').forEach(b => b.disabled = true);
+            this.textContent = 'Running…';
+
+            resultBox.className = 'rounded-xl px-4 py-3 text-xs font-mono whitespace-pre-wrap break-all bg-blue-50 text-blue-700';
+            resultBox.textContent = 'Calling RAG service… this may take a minute.';
+
+            try {
+                const res  = await fetch(url, {
+                    method:  'POST',
+                    headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+                });
+                const data = await res.json();
+
+                resultBox.className = res.ok
+                    ? 'rounded-xl px-4 py-3 text-xs font-mono whitespace-pre-wrap break-all bg-green-50 text-green-700'
+                    : 'rounded-xl px-4 py-3 text-xs font-mono whitespace-pre-wrap break-all bg-red-50 text-red-700';
+                resultBox.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                resultBox.className = 'rounded-xl px-4 py-3 text-xs font-mono whitespace-pre-wrap break-all bg-red-50 text-red-700';
+                resultBox.textContent = 'Network error: ' + err.message;
+            } finally {
+                document.querySelectorAll('.rag-btn').forEach(b => b.disabled = false);
+                this.textContent = origText;
+            }
+        });
+    });
+})();
+</script>
+@endpush

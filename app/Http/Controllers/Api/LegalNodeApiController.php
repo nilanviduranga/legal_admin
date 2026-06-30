@@ -21,8 +21,7 @@ class LegalNodeApiController extends Controller
     {
         $query = LegalNode::query()
             ->where('has_children', false)
-            // ->select(['node_id', 'act_id', 'parent_node_id', 'node_type', 'node_no', 'heading', 'level', 'status'])
-            ->select(['node_id'])
+            ->select(['node_id', 'act_id'])
             ->orderBy('act_id')
             ->orderBy('level')
             ->orderBy('sort_order');
