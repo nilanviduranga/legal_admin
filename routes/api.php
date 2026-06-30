@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Api\ActApiController;
+use App\Http\Controllers\Api\ActMetadataApiController;
+use App\Http\Controllers\Api\ActStructureApiController;
 use App\Http\Controllers\Api\CaseLawApiController;
 use App\Http\Controllers\Api\CrossReferenceApiController;
 use App\Http\Controllers\Api\LegalNodeApiController;
@@ -14,8 +16,18 @@ use Illuminate\Support\Facades\Route;
 
 // ─── Internal API (used by the admin panel / AI agent) ─────────────────────
 Route::prefix('v1')->group(function () {
-    // Act tree
+    // Acts — list + AI metadata
+    Route::get('acts', [ActMetadataApiController::class, 'index']);
+    Route::get('acts/all-metadata', [ActMetadataApiController::class, 'allMetadata']);
+    // Acts — structure queries (static routes must come before {act} wildcard routes)
+    Route::get('acts/search', [ActStructureApiController::class, 'search']);
     Route::get('acts/{act}/tree', [ActApiController::class, 'tree']);
+    Route::get('acts/{act}/metadata', [ActMetadataApiController::class, 'show']);
+    Route::post('acts/{act}/metadata', [ActMetadataApiController::class, 'store']);
+    Route::get('acts/{act}/text-sample', [ActMetadataApiController::class, 'textSample']);
+    Route::get('acts/{act}/structure-stats', [ActStructureApiController::class, 'stats']);
+    Route::get('acts/{act}/nodes-by-type', [ActStructureApiController::class, 'listByType']);
+    Route::post('acts/{act}/statistics/refresh', [ActStructureApiController::class, 'refreshStats']);
 
     // Node operations
     Route::get('nodes/leaf', [LegalNodeApiController::class, 'leafNodes']);
