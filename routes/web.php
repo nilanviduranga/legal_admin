@@ -86,8 +86,8 @@ Route::prefix('admin')
 
         // Settings
         Route::get('settings', [SettingsController::class, 'index'])->name('settings');
-        Route::post('settings/vectordb/rebuild',           [SettingsController::class, 'rebuildVectorDb'])->name('settings.vectordb.rebuild');
-        Route::post('settings/vectordb/rebuild-caselaws',  [SettingsController::class, 'rebuildCaselaws'])->name('settings.vectordb.rebuild-caselaws');
+        Route::post('settings/vectordb/rebuild-statutes',     [SettingsController::class, 'rebuildStatutes'])->name('settings.vectordb.rebuild-statutes');
+        Route::post('settings/vectordb/rebuild-caselaws',     [SettingsController::class, 'rebuildCaselaws'])->name('settings.vectordb.rebuild-caselaws');
         Route::post('settings/vectordb/rebuild-act-metadata', [SettingsController::class, 'rebuildActMetadata'])->name('settings.vectordb.rebuild-act-metadata');
         Route::post('settings/vectordb/warm-structure-cache', [SettingsController::class, 'warmStructureCache'])->name('settings.vectordb.warm-structure-cache');
 

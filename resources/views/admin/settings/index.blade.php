@@ -99,54 +99,57 @@
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100">
             <h2 class="text-sm font-semibold text-gray-900">Vector Store</h2>
-            <p class="text-xs text-gray-400 mt-0.5">Rebuild FAISS indexes and AI metadata on the RAG service</p>
+            <p class="text-xs text-gray-400 mt-0.5">
+                RAG service: <span class="font-mono text-indigo-600">{{ env('RAG_URL', 'http://127.0.0.1:8000') }}</span>
+                &nbsp;·&nbsp; change <code class="text-gray-500">RAG_URL</code> in <code class="text-gray-500">.env</code>
+            </p>
         </div>
         <div class="px-6 py-5 space-y-3">
 
-            {{-- Full rebuild --}}
+            {{-- 1. Rebuild Statutes --}}
             <div class="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
                 <div>
-                    <p class="text-sm font-medium text-gray-700">Full Rebuild</p>
-                    <p class="text-xs text-gray-400 mt-0.5">Statutes + case laws + act metadata + structure cache (slow)</p>
+                    <p class="text-sm font-medium text-gray-700">Rebuild Statutes</p>
+                    <p class="text-xs text-gray-400 mt-0.5">Statute FAISS index only &mdash; <code class="text-gray-500">POST /vectordb/rebuild-statutes</code></p>
                 </div>
-                <button type="button" data-rag-action="{{ route('admin.settings.vectordb.rebuild') }}" data-result="result-full"
-                        class="rag-btn rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors disabled:opacity-50">
-                    Rebuild All
+                <button type="button" data-rag-action="{{ route('admin.settings.vectordb.rebuild-statutes') }}"
+                        class="rag-btn rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors">
+                    Rebuild
                 </button>
             </div>
 
-            {{-- Case laws only --}}
+            {{-- 2. Rebuild Case Laws --}}
             <div class="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
                 <div>
                     <p class="text-sm font-medium text-gray-700">Rebuild Case Laws</p>
-                    <p class="text-xs text-gray-400 mt-0.5">Only the case law FAISS index</p>
+                    <p class="text-xs text-gray-400 mt-0.5">Case law FAISS index only &mdash; <code class="text-gray-500">POST /vectordb/rebuild-caselaws</code></p>
                 </div>
-                <button type="button" data-rag-action="{{ route('admin.settings.vectordb.rebuild-caselaws') }}" data-result="result-caselaws"
-                        class="rag-btn rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors disabled:opacity-50">
+                <button type="button" data-rag-action="{{ route('admin.settings.vectordb.rebuild-caselaws') }}"
+                        class="rag-btn rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors">
                     Rebuild
                 </button>
             </div>
 
-            {{-- Act metadata --}}
+            {{-- 3. Rebuild Act Metadata --}}
             <div class="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
                 <div>
                     <p class="text-sm font-medium text-gray-700">Rebuild Act Metadata</p>
-                    <p class="text-xs text-gray-400 mt-0.5">AI summaries + act-level FAISS index</p>
+                    <p class="text-xs text-gray-400 mt-0.5">AI summaries + act-level FAISS index &mdash; <code class="text-gray-500">POST /vectordb/rebuild-act-metadata</code></p>
                 </div>
-                <button type="button" data-rag-action="{{ route('admin.settings.vectordb.rebuild-act-metadata') }}" data-result="result-actmeta"
-                        class="rag-btn rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors disabled:opacity-50">
+                <button type="button" data-rag-action="{{ route('admin.settings.vectordb.rebuild-act-metadata') }}"
+                        class="rag-btn rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors">
                     Rebuild
                 </button>
             </div>
 
-            {{-- Warm cache --}}
+            {{-- 4. Warm Structure Cache --}}
             <div class="flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
                 <div>
                     <p class="text-sm font-medium text-gray-700">Warm Structure Cache</p>
-                    <p class="text-xs text-gray-400 mt-0.5">Pre-compute act statistics for faster queries</p>
+                    <p class="text-xs text-gray-400 mt-0.5">Pre-compute act statistics &mdash; <code class="text-gray-500">POST /vectordb/warm-structure-cache</code></p>
                 </div>
-                <button type="button" data-rag-action="{{ route('admin.settings.vectordb.warm-structure-cache') }}" data-result="result-warmcache"
-                        class="rag-btn rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors disabled:opacity-50">
+                <button type="button" data-rag-action="{{ route('admin.settings.vectordb.warm-structure-cache') }}"
+                        class="rag-btn rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-colors">
                     Warm
                 </button>
             </div>
