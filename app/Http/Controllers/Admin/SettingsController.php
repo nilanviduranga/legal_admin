@@ -19,20 +19,14 @@ class SettingsController extends Controller
 {
     private function ragUrl(): string
     {
-        return rtrim(config('app.rag_url', env('RAG_URL', 'http://127.0.0.1:8000')), '/');
-    }
-
-    private function postRag(string $path): array
-    {
-        $response = Http::timeout(600)->post($this->ragUrl() . $path);
-        return ['status_code' => $response->status(), 'body' => $response->json()];
+        return rtrim(env('RAG_URL', 'http://127.0.0.1:8000'), '/');
     }
 
     private function callRag(string $path): JsonResponse
     {
         try {
-            $result = $this->postRag($path);
-            return response()->json($result['body'], $result['status_code']);
+            $response = Http::timeout(600)->post($this->ragUrl() . $path);
+            return response()->json($response->json(), $response->status());
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 502);
         }
@@ -59,26 +53,9 @@ class SettingsController extends Controller
         return view('admin.settings.index', compact('tableCounts', 'dbStatus'));
     }
 
-    public function rebuildVectorDb(): JsonResponse
+    public function rebuildStatutes(): JsonResponse
     {
-        try {
-            // Step 1: rebuild all FAISS indexes + act metadata
-            $rebuild = $this->postRag('/vectordb/rebuild');
-            if ($rebuild['status_code'] >= 400) {
-                return response()->json($rebuild['body'], $rebuild['status_code']);
-            }
-
-            // Step 2: warm structure cache
-            $warm = $this->postRag('/vectordb/warm-structure-cache');
-
-            return response()->json([
-                'status'          => 'full_rebuild_complete',
-                'rebuild'         => $rebuild['body'],
-                'structure_cache' => $warm['body'],
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 502);
-        }
+        return $this->callRag('/vectordb/rebuild-statutes');
     }
 
     public function rebuildCaselaws(): JsonResponse
